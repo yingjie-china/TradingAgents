@@ -9,10 +9,10 @@ DEFAULT_CONFIG = {
         "dataflows/data_cache",
     ),
     # LLM settings
-    "llm_provider": "openai",
-    "deep_think_llm": "o4-mini",
-    "quick_think_llm": "gpt-4o-mini",
-    "backend_url": "https://api.openai.com/v1",
+    "llm_provider": "火山引擎",
+    "deep_think_llm": "ep-20250704071047-mp9n7",
+    "quick_think_llm": "ep-20250623100824-8zk4q",
+    "backend_url": "https://ark.cn-beijing.volces.com/api/v3",
     # Debate and discussion settings
     "max_debate_rounds": 1,
     "max_risk_discuss_rounds": 1,

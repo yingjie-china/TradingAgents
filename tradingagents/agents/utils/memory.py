@@ -7,6 +7,8 @@ class FinancialSituationMemory:
     def __init__(self, name, config):
         if config["backend_url"] == "http://localhost:11434/v1":
             self.embedding = "nomic-embed-text"
+        elif config["llm_provider"] == "火山引擎":
+            self.embedding = "ep-20250623110743-tgzf9"
         else:
             self.embedding = "text-embedding-3-small"
         self.client = OpenAI(base_url=config["backend_url"])

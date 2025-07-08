@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 setup(
     name="tradingagents",
     version="0.1.0",
-    description="Multi-Agents LLM Financial Trading Framework",
+    description="多智能体大型语言模型金融交易框架",
     author="TradingAgents Team",
     author_email="yijia.xiao@cs.ucla.edu",
     url="https://github.com/TauricResearch",

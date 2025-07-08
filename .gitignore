@@ -7,3 +7,6 @@ eval_results/
 eval_data/
 *.egg-info/
 .env
+.idea/
+results/
+tests.py

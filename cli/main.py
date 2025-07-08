@@ -29,7 +29,7 @@ console = Console()
 
 app = typer.Typer(
     name="TradingAgents",
-    help="TradingAgents CLI: Multi-Agents LLM Financial Trading Framework",
+    help="TradingAgents CLI: 多智能体大型语言模型金融交易框架",
     add_completion=True,  # Enable shell completion
 )
 
@@ -43,22 +43,22 @@ class MessageBuffer:
         self.final_report = None  # Store the complete final report
         self.agent_status = {
             # Analyst Team
-            "Market Analyst": "pending",
-            "Social Analyst": "pending",
-            "News Analyst": "pending",
-            "Fundamentals Analyst": "pending",
+            "市场分析师": "待处理",
+            "社交媒体分析师": "待处理",
+            "新闻分析师": "待处理",
+            "基本面分析师": "待处理",
             # Research Team
-            "Bull Researcher": "pending",
-            "Bear Researcher": "pending",
-            "Research Manager": "pending",
+            "看涨研究员": "待处理",
+            "看跌研究员": "待处理",
+            "研究经理": "待处理",
             # Trading Team
-            "Trader": "pending",
+            "交易员": "待处理",
             # Risk Management Team
-            "Risky Analyst": "pending",
-            "Neutral Analyst": "pending",
-            "Safe Analyst": "pending",
+            "激进型分析师": "待处理",
+            "中性分析师": "待处理",
+            "稳健型分析师": "待处理",
             # Portfolio Management Team
-            "Portfolio Manager": "pending",
+            "投资组合经理": "待处理",
         }
         self.current_agent = None
         self.report_sections = {
@@ -103,13 +103,13 @@ class MessageBuffer:
         if latest_section and latest_content:
             # Format the current section for display
             section_titles = {
-                "market_report": "Market Analysis",
-                "sentiment_report": "Social Sentiment",
-                "news_report": "News Analysis",
-                "fundamentals_report": "Fundamentals Analysis",
-                "investment_plan": "Research Team Decision",
-                "trader_investment_plan": "Trading Team Plan",
-                "final_trade_decision": "Portfolio Management Decision",
+                "market_report": "市场分析",
+                "sentiment_report": "社交舆情",
+                "news_report": "新闻分析",
+                "fundamentals_report": "基本面分析",
+                "investment_plan": "研究团队决策",
+                "trader_investment_plan": "交易团队计划",
+                "final_trade_decision": "投资组合管理决策",
             }
             self.current_report = (
                 f"### {section_titles[latest_section]}\n{latest_content}"
@@ -131,37 +131,37 @@ class MessageBuffer:
                 "fundamentals_report",
             ]
         ):
-            report_parts.append("## Analyst Team Reports")
+            report_parts.append("## 分析师团队报告")
             if self.report_sections["market_report"]:
                 report_parts.append(
-                    f"### Market Analysis\n{self.report_sections['market_report']}"
+                    f"### 市场分析\n{self.report_sections['market_report']}"
                 )
             if self.report_sections["sentiment_report"]:
                 report_parts.append(
-                    f"### Social Sentiment\n{self.report_sections['sentiment_report']}"
+                    f"### 社交舆情\n{self.report_sections['sentiment_report']}"
                 )
             if self.report_sections["news_report"]:
                 report_parts.append(
-                    f"### News Analysis\n{self.report_sections['news_report']}"
+                    f"### 新闻分析\n{self.report_sections['news_report']}"
                 )
             if self.report_sections["fundamentals_report"]:
                 report_parts.append(
-                    f"### Fundamentals Analysis\n{self.report_sections['fundamentals_report']}"
+                    f"### 基本面分析\n{self.report_sections['fundamentals_report']}"
                 )
 
         # Research Team Reports
         if self.report_sections["investment_plan"]:
-            report_parts.append("## Research Team Decision")
+            report_parts.append("## 研究团队决策")
             report_parts.append(f"{self.report_sections['investment_plan']}")
 
         # Trading Team Reports
         if self.report_sections["trader_investment_plan"]:
-            report_parts.append("## Trading Team Plan")
+            report_parts.append("## 交易团队计划")
             report_parts.append(f"{self.report_sections['trader_investment_plan']}")
 
         # Portfolio Management Decision
         if self.report_sections["final_trade_decision"]:
-            report_parts.append("## Portfolio Management Decision")
+            report_parts.append("## 投资组合管理决策")
             report_parts.append(f"{self.report_sections['final_trade_decision']}")
 
         self.final_report = "\n\n".join(report_parts) if report_parts else None
@@ -190,9 +190,9 @@ def update_display(layout, spinner_text=None):
     # Header with welcome message
     layout["header"].update(
         Panel(
-            "[bold green]Welcome to TradingAgents CLI[/bold green]\n"
+            "[bold green]欢迎来到TradingAgents CLI[/bold green]\n"
             "[dim]© [Tauric Research](https://github.com/TauricResearch)[/dim]",
-            title="Welcome to TradingAgents",
+            title="欢迎来到TradingAgents",
             border_style="green",
             padding=(1, 2),
             expand=True,
@@ -209,38 +209,50 @@ def update_display(layout, spinner_text=None):
         padding=(0, 2),  # Add horizontal padding
         expand=True,  # Make table expand to fill available space
     )
-    progress_table.add_column("Team", style="cyan", justify="center", width=20)
-    progress_table.add_column("Agent", style="green", justify="center", width=20)
-    progress_table.add_column("Status", style="yellow", justify="center", width=20)
+    progress_table.add_column("团队", style="cyan", justify="center", width=20)
+    progress_table.add_column("智能体", style="green", justify="center", width=20)
+    progress_table.add_column("状态", style="yellow", justify="center", width=20)
 
     # Group agents by team
+    # teams = {
+    #     "Analyst Team": [
+    #         "Market Analyst",
+    #         "Social Analyst",
+    #         "News Analyst",
+    #         "Fundamentals Analyst",
+    #     ],
+    #     "Research Team": ["Bull Researcher", "Bear Researcher", "Research Manager"],
+    #     "Trading Team": ["Trader"],
+    #     "Risk Management": ["Risky Analyst", "Neutral Analyst", "Safe Analyst"],
+    #     "Portfolio Management": ["Portfolio Manager"],
+    # }
     teams = {
-        "Analyst Team": [
-            "Market Analyst",
-            "Social Analyst",
-            "News Analyst",
-            "Fundamentals Analyst",
+        "分析师团队": [
+            "市场分析师",
+            "社交媒体分析师",
+            "新闻分析师",
+            "基本面分析师",
         ],
-        "Research Team": ["Bull Researcher", "Bear Researcher", "Research Manager"],
-        "Trading Team": ["Trader"],
-        "Risk Management": ["Risky Analyst", "Neutral Analyst", "Safe Analyst"],
-        "Portfolio Management": ["Portfolio Manager"],
+        "研究团队": ["看涨研究员", "看跌研究员", "研究经理"],
+        "交易团队": ["交易员"],
+        "风险管理": ["激进型分析师", "中性分析师", "稳健型分析师"],
+        "投资组合管理": ["投资组合经理"],
     }
 
     for team, agents in teams.items():
         # Add first agent with team name
         first_agent = agents[0]
         status = message_buffer.agent_status[first_agent]
-        if status == "in_progress":
+        if status == "处理中":
             spinner = Spinner(
-                "dots", text="[blue]in_progress[/blue]", style="bold cyan"
+                "dots", text="[blue]处理中[/blue]", style="bold cyan"
             )
             status_cell = spinner
         else:
             status_color = {
-                "pending": "yellow",
-                "completed": "green",
-                "error": "red",
+                "待处理": "yellow",
+                "已完成": "green",
+                "错误": "red",
             }.get(status, "white")
             status_cell = f"[{status_color}]{status}[/{status_color}]"
         progress_table.add_row(team, first_agent, status_cell)
@@ -250,14 +262,14 @@ def update_display(layout, spinner_text=None):
             status = message_buffer.agent_status[agent]
             if status == "in_progress":
                 spinner = Spinner(
-                    "dots", text="[blue]in_progress[/blue]", style="bold cyan"
+                    "dots", text="[blue]处理中[/blue]", style="bold cyan"
                 )
                 status_cell = spinner
             else:
                 status_color = {
-                    "pending": "yellow",
-                    "completed": "green",
-                    "error": "red",
+                    "待处理": "yellow",
+                    "已完成": "green",
+                    "错误": "red",
                 }.get(status, "white")
                 status_cell = f"[{status_color}]{status}[/{status_color}]"
             progress_table.add_row("", agent, status_cell)
@@ -266,7 +278,7 @@ def update_display(layout, spinner_text=None):
         progress_table.add_row("─" * 20, "─" * 20, "─" * 20, style="dim")
 
     layout["progress"].update(
-        Panel(progress_table, title="Progress", border_style="cyan", padding=(1, 2))
+        Panel(progress_table, title="进度", border_style="cyan", padding=(1, 2))
     )
 
     # Messages panel showing recent messages and tool calls
@@ -279,10 +291,10 @@ def update_display(layout, spinner_text=None):
         show_lines=True,  # Keep horizontal lines
         padding=(0, 1),  # Add some padding between columns
     )
-    messages_table.add_column("Time", style="cyan", width=8, justify="center")
-    messages_table.add_column("Type", style="green", width=10, justify="center")
+    messages_table.add_column("时间", style="cyan", width=8, justify="center")
+    messages_table.add_column("类型", style="green", width=10, justify="center")
     messages_table.add_column(
-        "Content", style="white", no_wrap=False, ratio=1
+        "内容", style="white", no_wrap=False, ratio=1
     )  # Make content column expand
 
     # Combine tool calls and messages
@@ -347,7 +359,7 @@ def update_display(layout, spinner_text=None):
     layout["messages"].update(
         Panel(
             messages_table,
-            title="Messages & Tools",
+            title="信息和工具",
             border_style="blue",
             padding=(1, 2),
         )
@@ -358,7 +370,7 @@ def update_display(layout, spinner_text=None):
         layout["analysis"].update(
             Panel(
                 Markdown(message_buffer.current_report),
-                title="Current Report",
+                title="当前报告",
                 border_style="green",
                 padding=(1, 2),
             )
@@ -366,8 +378,8 @@ def update_display(layout, spinner_text=None):
     else:
         layout["analysis"].update(
             Panel(
-                "[italic]Waiting for analysis report...[/italic]",
-                title="Current Report",
+                "[italic]正在等待分析报告……[/italic]",
+                title="当前报告",
                 border_style="green",
                 padding=(1, 2),
             )
@@ -385,7 +397,7 @@ def update_display(layout, spinner_text=None):
     stats_table = Table(show_header=False, box=None, padding=(0, 2), expand=True)
     stats_table.add_column("Stats", justify="center")
     stats_table.add_row(
-        f"Tool Calls: {tool_calls_count} | LLM Calls: {llm_calls_count} | Generated Reports: {reports_count}"
+        f"工具调用: {tool_calls_count} | 大模型调用: {llm_calls_count} | 生成报告: {reports_count}"
     )
 
     layout["footer"].update(Panel(stats_table, border_style="grey50"))
@@ -399,9 +411,9 @@ def get_user_selections():
 
     # Create welcome box content
     welcome_content = f"{welcome_ascii}\n"
-    welcome_content += "[bold green]TradingAgents: Multi-Agents LLM Financial Trading Framework - CLI[/bold green]\n\n"
-    welcome_content += "[bold]Workflow Steps:[/bold]\n"
-    welcome_content += "I. Analyst Team → II. Research Team → III. Trader → IV. Risk Management → V. Portfolio Management\n\n"
+    welcome_content += "[bold green]TradingAgents: 多智能体大型语言模型金融交易框架 - CLI[/bold green]\n\n"
+    welcome_content += "[bold]工作流步骤:[/bold]\n"
+    welcome_content += "I. 分析团队 → II. 调研团队 → III. 交易员 → IV. 风控 → V. 投资组合管理\n\n"
     welcome_content += (
         "[dim]Built by [Tauric Research](https://github.com/TauricResearch)[/dim]"
     )
@@ -411,8 +423,8 @@ def get_user_selections():
         welcome_content,
         border_style="green",
         padding=(1, 2),
-        title="Welcome to TradingAgents",
-        subtitle="Multi-Agents LLM Financial Trading Framework",
+        title="欢迎来到TradingAgents",
+        subtitle="多智能体大型语言模型金融交易框架",
     )
     console.print(Align.center(welcome_box))
     console.print()  # Add a blank line after the welcome box
@@ -422,13 +434,13 @@ def get_user_selections():
         box_content = f"[bold]{title}[/bold]\n"
         box_content += f"[dim]{prompt}[/dim]"
         if default:
-            box_content += f"\n[dim]Default: {default}[/dim]"
+            box_content += f"\n[dim]默认: {default}[/dim]"
         return Panel(box_content, border_style="blue", padding=(1, 2))
 
     # Step 1: Ticker symbol
     console.print(
         create_question_box(
-            "Step 1: Ticker Symbol", "Enter the ticker symbol to analyze", "SPY"
+            "步骤 1：股票代码", "输入要分析的股票代码", "SPY"
         )
     )
     selected_ticker = get_ticker()
@@ -437,8 +449,8 @@ def get_user_selections():
     default_date = datetime.datetime.now().strftime("%Y-%m-%d")
     console.print(
         create_question_box(
-            "Step 2: Analysis Date",
-            "Enter the analysis date (YYYY-MM-DD)",
+            "步骤 2：分析日期",
+            "输入分析日期 (YYYY-MM-DD)",
             default_date,
         )
     )
@@ -447,18 +459,18 @@ def get_user_selections():
     # Step 3: Select analysts
     console.print(
         create_question_box(
-            "Step 3: Analysts Team", "Select your LLM analyst agents for the analysis"
+            "步骤 3：分析师团队", "为分析选择您的 LLM 分析师智能体"
         )
     )
     selected_analysts = select_analysts()
     console.print(
-        f"[green]Selected analysts:[/green] {', '.join(analyst.value for analyst in selected_analysts)}"
+        f"[green]已选择的分析师:[/green] {', '.join(analyst.value for analyst in selected_analysts)}"
     )
 
     # Step 4: Research depth
     console.print(
         create_question_box(
-            "Step 4: Research Depth", "Select your research depth level"
+            "步骤 4：研究深度", "选择您的研究深度级别"
         )
     )
     selected_research_depth = select_research_depth()
@@ -466,7 +478,7 @@ def get_user_selections():
     # Step 5: OpenAI backend
     console.print(
         create_question_box(
-            "Step 5: OpenAI backend", "Select which service to talk to"
+            "步骤 5：AI 后端", "选择要对接的服务"
         )
     )
     selected_llm_provider, backend_url = select_llm_provider()
@@ -474,7 +486,7 @@ def get_user_selections():
     # Step 6: Thinking agents
     console.print(
         create_question_box(
-            "Step 6: Thinking Agents", "Select your thinking agents for analysis"
+            "步骤 6：思考智能体", "选择用于分析的思考智能体"
         )
     )
     selected_shallow_thinker = select_shallow_thinking_agent(selected_llm_provider)
@@ -507,18 +519,18 @@ def get_analysis_date():
             # Validate date format and ensure it's not in the future
             analysis_date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
             if analysis_date.date() > datetime.datetime.now().date():
-                console.print("[red]Error: Analysis date cannot be in the future[/red]")
+                console.print("[red]错误：分析日期不能是未来的日期[/red]")
                 continue
             return date_str
         except ValueError:
             console.print(
-                "[red]Error: Invalid date format. Please use YYYY-MM-DD[/red]"
+                "[red]错误：日期格式无效。请使用 YYYY-MM-DD 格式[/red]"
             )
 
 
 def display_complete_report(final_state):
     """Display the complete analysis report with team-based panels."""
-    console.print("\n[bold green]Complete Analysis Report[/bold green]\n")
+    console.print("\n[bold green]完整分析报告[/bold green]\n")
 
     # I. Analyst Team Reports
     analyst_reports = []
@@ -528,7 +540,7 @@ def display_complete_report(final_state):
         analyst_reports.append(
             Panel(
                 Markdown(final_state["market_report"]),
-                title="Market Analyst",
+                title="市场分析师",
                 border_style="blue",
                 padding=(1, 2),
             )
@@ -539,7 +551,7 @@ def display_complete_report(final_state):
         analyst_reports.append(
             Panel(
                 Markdown(final_state["sentiment_report"]),
-                title="Social Analyst",
+                title="社交分析师",
                 border_style="blue",
                 padding=(1, 2),
             )
@@ -550,7 +562,7 @@ def display_complete_report(final_state):
         analyst_reports.append(
             Panel(
                 Markdown(final_state["news_report"]),
-                title="News Analyst",
+                title="新闻分析师",
                 border_style="blue",
                 padding=(1, 2),
             )
@@ -561,7 +573,7 @@ def display_complete_report(final_state):
         analyst_reports.append(
             Panel(
                 Markdown(final_state["fundamentals_report"]),
-                title="Fundamentals Analyst",
+                title="基本面分析师",
                 border_style="blue",
                 padding=(1, 2),
             )
@@ -571,7 +583,7 @@ def display_complete_report(final_state):
         console.print(
             Panel(
                 Columns(analyst_reports, equal=True, expand=True),
-                title="I. Analyst Team Reports",
+                title="I. 分析师团队报告",
                 border_style="cyan",
                 padding=(1, 2),
             )
@@ -587,7 +599,7 @@ def display_complete_report(final_state):
             research_reports.append(
                 Panel(
                     Markdown(debate_state["bull_history"]),
-                    title="Bull Researcher",
+                    title="看涨研究员",
                     border_style="blue",
                     padding=(1, 2),
                 )
@@ -598,7 +610,7 @@ def display_complete_report(final_state):
             research_reports.append(
                 Panel(
                     Markdown(debate_state["bear_history"]),
-                    title="Bear Researcher",
+                    title="看跌研究员",
                     border_style="blue",
                     padding=(1, 2),
                 )
@@ -609,7 +621,7 @@ def display_complete_report(final_state):
             research_reports.append(
                 Panel(
                     Markdown(debate_state["judge_decision"]),
-                    title="Research Manager",
+                    title="研究经理",
                     border_style="blue",
                     padding=(1, 2),
                 )
@@ -619,7 +631,7 @@ def display_complete_report(final_state):
             console.print(
                 Panel(
                     Columns(research_reports, equal=True, expand=True),
-                    title="II. Research Team Decision",
+                    title="II. 研究团队决策",
                     border_style="magenta",
                     padding=(1, 2),
                 )
@@ -631,11 +643,11 @@ def display_complete_report(final_state):
             Panel(
                 Panel(
                     Markdown(final_state["trader_investment_plan"]),
-                    title="Trader",
+                    title="交易员",
                     border_style="blue",
                     padding=(1, 2),
                 ),
-                title="III. Trading Team Plan",
+                title="III. 交易团队计划",
                 border_style="yellow",
                 padding=(1, 2),
             )
@@ -651,7 +663,7 @@ def display_complete_report(final_state):
             risk_reports.append(
                 Panel(
                     Markdown(risk_state["risky_history"]),
-                    title="Aggressive Analyst",
+                    title="激进型分析师",
                     border_style="blue",
                     padding=(1, 2),
                 )
@@ -662,7 +674,7 @@ def display_complete_report(final_state):
             risk_reports.append(
                 Panel(
                     Markdown(risk_state["safe_history"]),
-                    title="Conservative Analyst",
+                    title="保守型分析师",
                     border_style="blue",
                     padding=(1, 2),
                 )
@@ -673,7 +685,7 @@ def display_complete_report(final_state):
             risk_reports.append(
                 Panel(
                     Markdown(risk_state["neutral_history"]),
-                    title="Neutral Analyst",
+                    title="中性分析师",
                     border_style="blue",
                     padding=(1, 2),
                 )
@@ -683,7 +695,7 @@ def display_complete_report(final_state):
             console.print(
                 Panel(
                     Columns(risk_reports, equal=True, expand=True),
-                    title="IV. Risk Management Team Decision",
+                    title="IV. 风险管理团队决策",
                     border_style="red",
                     padding=(1, 2),
                 )
@@ -695,11 +707,11 @@ def display_complete_report(final_state):
                 Panel(
                     Panel(
                         Markdown(risk_state["judge_decision"]),
-                        title="Portfolio Manager",
+                        title="投资组合经理",
                         border_style="blue",
                         padding=(1, 2),
                     ),
-                    title="V. Portfolio Manager Decision",
+                    title="V. 投资组合经理决策",
                     border_style="green",
                     padding=(1, 2),
                 )
@@ -708,7 +720,7 @@ def display_complete_report(final_state):
 
 def update_research_team_status(status):
     """Update status for all research team members and trader."""
-    research_team = ["Bull Researcher", "Bear Researcher", "Research Manager", "Trader"]
+    research_team = ["看涨研究员", "看跌研究员", "研究经理", "交易员"]
     for agent in research_team:
         message_buffer.update_agent_status(agent, status)
 
@@ -804,19 +816,19 @@ def run_analysis():
         update_display(layout)
 
         # Add initial messages
-        message_buffer.add_message("System", f"Selected ticker: {selections['ticker']}")
+        message_buffer.add_message("System", f"选择的股票: {selections['ticker']}")
         message_buffer.add_message(
-            "System", f"Analysis date: {selections['analysis_date']}"
+            "System", f"分析日期: {selections['analysis_date']}"
         )
         message_buffer.add_message(
             "System",
-            f"Selected analysts: {', '.join(analyst.value for analyst in selections['analysts'])}",
+            f"选择的分析师: {', '.join(analyst.value for analyst in selections['analysts'])}",
         )
         update_display(layout)
 
         # Reset agent statuses
         for agent in message_buffer.agent_status:
-            message_buffer.update_agent_status(agent, "pending")
+            message_buffer.update_agent_status(agent, "待处理")
 
         # Reset report sections
         for section in message_buffer.report_sections:
@@ -831,7 +843,7 @@ def run_analysis():
 
         # Create spinner text
         spinner_text = (
-            f"Analyzing {selections['ticker']} on {selections['analysis_date']}..."
+            f"分析 {selections['ticker']} 于 {selections['analysis_date']}..."
         )
         update_display(layout, spinner_text)
 
@@ -876,33 +888,33 @@ def run_analysis():
                     message_buffer.update_report_section(
                         "market_report", chunk["market_report"]
                     )
-                    message_buffer.update_agent_status("Market Analyst", "completed")
+                    message_buffer.update_agent_status("市场分析师", "已完成")
                     # Set next analyst to in_progress
                     if "social" in selections["analysts"]:
                         message_buffer.update_agent_status(
-                            "Social Analyst", "in_progress"
+                            "社交媒体分析师", "in_progress"
                         )
 
                 if "sentiment_report" in chunk and chunk["sentiment_report"]:
                     message_buffer.update_report_section(
                         "sentiment_report", chunk["sentiment_report"]
                     )
-                    message_buffer.update_agent_status("Social Analyst", "completed")
+                    message_buffer.update_agent_status("社交媒体分析师", "已完成")
                     # Set next analyst to in_progress
-                    if "news" in selections["analysts"]:
+                    if "新闻" in selections["analysts"]:
                         message_buffer.update_agent_status(
-                            "News Analyst", "in_progress"
+                            "新闻分析师", "in_progress"
                         )
 
                 if "news_report" in chunk and chunk["news_report"]:
                     message_buffer.update_report_section(
                         "news_report", chunk["news_report"]
                     )
-                    message_buffer.update_agent_status("News Analyst", "completed")
+                    message_buffer.update_agent_status("新闻分析师", "已完成")
                     # Set next analyst to in_progress
-                    if "fundamentals" in selections["analysts"]:
+                    if "基本面" in selections["analysts"]:
                         message_buffer.update_agent_status(
-                            "Fundamentals Analyst", "in_progress"
+                            "基本面分析师", "in_progress"
                         )
 
                 if "fundamentals_report" in chunk and chunk["fundamentals_report"]:
@@ -910,7 +922,7 @@ def run_analysis():
                         "fundamentals_report", chunk["fundamentals_report"]
                     )
                     message_buffer.update_agent_status(
-                        "Fundamentals Analyst", "completed"
+                        "基本面分析师", "已完成"
                     )
                     # Set all research team members to in_progress
                     update_research_team_status("in_progress")
@@ -934,7 +946,7 @@ def run_analysis():
                             # Update research report with bull's latest analysis
                             message_buffer.update_report_section(
                                 "investment_plan",
-                                f"### Bull Researcher Analysis\n{latest_bull}",
+                                f"### 看涨研究员分析\n{latest_bull}",
                             )
 
                     # Update Bear Researcher status and report
@@ -949,7 +961,7 @@ def run_analysis():
                             # Update research report with bear's latest analysis
                             message_buffer.update_report_section(
                                 "investment_plan",
-                                f"{message_buffer.report_sections['investment_plan']}\n\n### Bear Researcher Analysis\n{latest_bear}",
+                                f"{message_buffer.report_sections['investment_plan']}\n\n### 看跌研究员分析\n{latest_bear}",
                             )
 
                     # Update Research Manager status and final decision
@@ -961,15 +973,15 @@ def run_analysis():
                         update_research_team_status("in_progress")
                         message_buffer.add_message(
                             "Reasoning",
-                            f"Research Manager: {debate_state['judge_decision']}",
+                            f"研究经理: {debate_state['judge_decision']}",
                         )
                         # Update research report with final decision
                         message_buffer.update_report_section(
                             "investment_plan",
-                            f"{message_buffer.report_sections['investment_plan']}\n\n### Research Manager Decision\n{debate_state['judge_decision']}",
+                            f"{message_buffer.report_sections['investment_plan']}\n\n### 研究经理决策\n{debate_state['judge_decision']}",
                         )
                         # Mark all research team members as completed
-                        update_research_team_status("completed")
+                        update_research_team_status("已完成")
                         # Set first risk analyst to in_progress
                         message_buffer.update_agent_status(
                             "Risky Analyst", "in_progress"
@@ -984,7 +996,7 @@ def run_analysis():
                         "trader_investment_plan", chunk["trader_investment_plan"]
                     )
                     # Set first risk analyst to in_progress
-                    message_buffer.update_agent_status("Risky Analyst", "in_progress")
+                    message_buffer.update_agent_status("激进型分析师", "in_progress")
 
                 # Risk Management Team - Handle Risk Debate State
                 if "risk_debate_state" in chunk and chunk["risk_debate_state"]:
@@ -996,16 +1008,16 @@ def run_analysis():
                         and risk_state["current_risky_response"]
                     ):
                         message_buffer.update_agent_status(
-                            "Risky Analyst", "in_progress"
+                            "激进型分析师", "in_progress"
                         )
                         message_buffer.add_message(
                             "Reasoning",
-                            f"Risky Analyst: {risk_state['current_risky_response']}",
+                            f"激进型分析师: {risk_state['current_risky_response']}",
                         )
                         # Update risk report with risky analyst's latest analysis only
                         message_buffer.update_report_section(
                             "final_trade_decision",
-                            f"### Risky Analyst Analysis\n{risk_state['current_risky_response']}",
+                            f"### 激进型分析师\n{risk_state['current_risky_response']}",
                         )
 
                     # Update Safe Analyst status and report
@@ -1014,16 +1026,16 @@ def run_analysis():
                         and risk_state["current_safe_response"]
                     ):
                         message_buffer.update_agent_status(
-                            "Safe Analyst", "in_progress"
+                            "稳健型分析师", "in_progress"
                         )
                         message_buffer.add_message(
                             "Reasoning",
-                            f"Safe Analyst: {risk_state['current_safe_response']}",
+                            f"稳健型分析师: {risk_state['current_safe_response']}",
                         )
                         # Update risk report with safe analyst's latest analysis only
                         message_buffer.update_report_section(
                             "final_trade_decision",
-                            f"### Safe Analyst Analysis\n{risk_state['current_safe_response']}",
+                            f"### 稳健型分析师\n{risk_state['current_safe_response']}",
                         )
 
                     # Update Neutral Analyst status and report
@@ -1032,40 +1044,40 @@ def run_analysis():
                         and risk_state["current_neutral_response"]
                     ):
                         message_buffer.update_agent_status(
-                            "Neutral Analyst", "in_progress"
+                            "中性分析师", "in_progress"
                         )
                         message_buffer.add_message(
                             "Reasoning",
-                            f"Neutral Analyst: {risk_state['current_neutral_response']}",
+                            f"中性分析师: {risk_state['current_neutral_response']}",
                         )
                         # Update risk report with neutral analyst's latest analysis only
                         message_buffer.update_report_section(
                             "final_trade_decision",
-                            f"### Neutral Analyst Analysis\n{risk_state['current_neutral_response']}",
+                            f"### 中性分析师\n{risk_state['current_neutral_response']}",
                         )
 
                     # Update Portfolio Manager status and final decision
                     if "judge_decision" in risk_state and risk_state["judge_decision"]:
                         message_buffer.update_agent_status(
-                            "Portfolio Manager", "in_progress"
+                            "投资组合经理", "in_progress"
                         )
                         message_buffer.add_message(
                             "Reasoning",
-                            f"Portfolio Manager: {risk_state['judge_decision']}",
+                            f"投资组合经理: {risk_state['judge_decision']}",
                         )
                         # Update risk report with final decision only
                         message_buffer.update_report_section(
                             "final_trade_decision",
-                            f"### Portfolio Manager Decision\n{risk_state['judge_decision']}",
+                            f"### 投资组合经理 Decision\n{risk_state['judge_decision']}",
                         )
                         # Mark risk analysts as completed
-                        message_buffer.update_agent_status("Risky Analyst", "completed")
-                        message_buffer.update_agent_status("Safe Analyst", "completed")
+                        message_buffer.update_agent_status("激进型分析师", "已完成")
+                        message_buffer.update_agent_status("Safe Analyst", "已完成")
                         message_buffer.update_agent_status(
-                            "Neutral Analyst", "completed"
+                            "中性分析师", "已完成"
                         )
                         message_buffer.update_agent_status(
-                            "Portfolio Manager", "completed"
+                            "稳健型分析师", "已完成"
                         )
 
                 # Update the display
@@ -1079,10 +1091,10 @@ def run_analysis():
 
         # Update all agent statuses to completed
         for agent in message_buffer.agent_status:
-            message_buffer.update_agent_status(agent, "completed")
+            message_buffer.update_agent_status(agent, "已完成")
 
         message_buffer.add_message(
-            "Analysis", f"Completed analysis for {selections['analysis_date']}"
+            "Analysis", f"已完成分析： {selections['analysis_date']}"
         )
 
         # Update final report sections
